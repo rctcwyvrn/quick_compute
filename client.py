@@ -4,7 +4,8 @@ import json
 
 def submit(item):
     r = requests.post("http://localhost:3030/add", json=item)
-    return r.text == "Added task"
+    if r.text != "Added task":
+        print(f"Submission failed! {r.text}")
 
 def get_results():
     r = requests.get("http://localhost:3030/results")

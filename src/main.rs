@@ -64,9 +64,11 @@ fn run_workers(recv_item: Receiver<Item>, send_result: Sender<ItemResult>) {
         let (s, r) = (send_result.clone(), recv_item.clone());
         thread::spawn(move || {
             for item in r.iter() {
-                if let Err(e) = s.send(challenge::process(item)) {
-                    eprintln!("Error on sending ItemResult {:?} | Killing thread", e);
-                    break
+                if let Some(res) = challenge::process(item) {
+                    if let Err(e) = s.send(res) {
+                        eprintln!("Error on sending ItemResult {:?} | Killing thread", e);
+                        break
+                    }
                 }
             }
         });
